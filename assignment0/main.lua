@@ -111,7 +111,7 @@ function love.update(dt)
 	 player2Score = player2Score + 1
 	 sounds['score']:play()
 
-	 if player2Score == 1 then
+	 if player2Score == 10 then
 	    winningPlayer = 2
 	    gameState = 'done'
 	 else
