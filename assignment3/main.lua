@@ -25,7 +25,7 @@
 
     Cool texture generator, used for background:
     http://cpetry.github.io/TextureGenerator-Online/
-]]}
+]]
 
 -- initialize our nearest-neighbor filter
 love.graphics.setDefaultFilter('nearest', 'nearest')

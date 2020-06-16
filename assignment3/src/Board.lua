@@ -34,7 +34,7 @@ function Board:initializeTiles()
 
 	   -- create a new tile at X,Y with a random color and variety
 	   local tileBasedOnLevel = self.level > 6 and math.random(6) or math.random(self.level)
-	   print(tileBasedOnLevel)
+	  
 	    table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), math.random(tileBasedOnLevel)))
 	end
     end

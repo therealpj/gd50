@@ -56,7 +56,7 @@ gTextures = {
 }
 
 gFrames = {
-    
+  
     -- divided into sets for each tile type in this game, instead of one large
     -- table of Quads
     ['tiles'] = GenerateTileQuads(gTextures['main'])
