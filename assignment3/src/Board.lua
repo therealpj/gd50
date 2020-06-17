@@ -34,8 +34,8 @@ function Board:initializeTiles()
 
 	   -- create a new tile at X,Y with a random color and variety
 	   local tileBasedOnLevel = self.level > 6 and math.random(6) or math.random(self.level)
-	  
-	    table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), math.random(tileBasedOnLevel)))
+
+	    table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(8), math.random(tileBasedOnLevel)))
 	end
     end
 
@@ -84,7 +84,13 @@ function Board:calculateMatches()
 
 			-- add each tile to the match that's in that match
 			table.insert(match, self.tiles[y][x2])
-		    end
+
+      if self.tiles[y][x2].shiny then
+          for val=1, 8 do
+            table.insert(match, self.tiles[y][val])
+          end
+        end
+      end
 
 		    -- add this match to our total matches table
 		    table.insert(matches, match)
@@ -105,6 +111,11 @@ function Board:calculateMatches()
 
 	    -- go backwards from end of last row by matchNum
 	    for x = 8, 8 - matchNum + 1, -1 do
+        if self.tiles[y][x].shiny then
+          for val=1, 8 do
+            table.insert(match, self.tiles[y][val])
+          end
+        end
 		table.insert(match, self.tiles[y][x])
 	    end
 
@@ -130,6 +141,11 @@ function Board:calculateMatches()
 
 		    for y2 = y - 1, y - matchNum, -1 do
 			table.insert(match, self.tiles[y2][x])
+      if self.tiles[y2][x].shiny then
+          for val=1, 8 do
+            table.insert(match, self.tiles[y2][val])
+          end
+        end
 		    end
 
 		    table.insert(matches, match)
@@ -150,6 +166,11 @@ function Board:calculateMatches()
 
 	    -- go backwards from end of last row by matchNum
 	    for y = 8, 8 - matchNum + 1, -1 do
+        if self.tiles[y][x].shiny then
+          for val=1, 8 do
+            table.insert(match, self.tiles[y][val])
+          end
+        end
 		table.insert(match, self.tiles[y][x])
 	    end
 
@@ -244,7 +265,7 @@ function Board:getFallingTiles()
 
 	       -- new tile with random color and variety
 	       local tileBasedOnLevel = self.level > 6 and math.random(6) or math.random(self.level)
-		local tile = Tile(x, y, math.random(18), tileBasedOnLevel)
+		local tile = Tile(x, y, math.random(8), tileBasedOnLevel)
 		tile.y = -32
 		self.tiles[y][x] = tile
 

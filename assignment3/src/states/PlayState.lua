@@ -67,7 +67,7 @@ function PlayState:enter(params)
     self.score = params.score or 0
 
     -- score we have to reach to get to the next level
-    self.scoreGoal = self.level
+    self.scoreGoal = self.level * 1000 * 1.25
 end
 
 function PlayState:update(dt)
@@ -160,6 +160,7 @@ function PlayState:update(dt)
 
 		self.board.tiles[newTile.gridY][newTile.gridX] = newTile
 
+		local matches = self.board:calculateMatches()
 		-- tween coordinates between the two so they swap
 		Timer.tween(0.1, {
 		    [self.highlightedTile] = {x = newTile.x, y = newTile.y},
@@ -168,11 +169,34 @@ function PlayState:update(dt)
 
 		-- once the swap is finished, we can tween falling blocks as needed
 		:finish(function()
-		    self:calculateMatches()
-		end)
-	    end
-	end
+			if matches == false then
+				Timer.tween(0.1, {
+					        [self.highlightedTile] = {x = newTile.x, y = newTile.y},
+					        [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}})
+
+							tempX = self.highlightedTile.gridX
+							tempY = self.highlightedTile.gridY
+
+							self.highlightedTile.gridX = newTile.gridX
+							self.highlightedTile.gridY = newTile.gridY
+
+							newTile.gridX = tempX
+							newTile.gridY = tempY
+
+							self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
+							self.highlightedTile
+
+							self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+							self.highlightedTile = nil
+			else
+				self:calculateMatches()
+		    end
+
+	    end)
+	 end
     end
+end
 
     Timer.update(dt)
 end
