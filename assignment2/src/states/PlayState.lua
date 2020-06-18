@@ -160,7 +160,7 @@ function PlayState:update(dt)
 	     -- key
 	     if containsLockedBrick then
 		-- can spawn the key if the locked brick gets hit, in case it is the last brick left. Dont spawn if triple ball on screen.
-		if brick.color == 1 and brick.tier == 0 and (math.floor(love.timer.getTime()) % 7 == 0)
+		if brick.color == 1 and brick.tier == 0 and (math.floor(love.timer.getTime()) % 5 == 0)
 		and self.takenKey == false and self.tripleBall.appeared == false then
 		   self.key.x = brick.x
 		   self.key.y = brick.y
