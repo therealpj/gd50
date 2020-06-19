@@ -10,24 +10,13 @@ PlayState = Class{__includes = BaseState}
 
 function PlayState:enter(def)
 	self.width  = def.width
-	self.player.score = def.score
+
 	self.levelNumber = def.levelNumber
 	self.startTimer = 2
-end
+	self.level = LevelMaker.generate(self.width, 10)
+	self.tileMap = self.level.tileMap
 
-function PlayState:init()
-    self.camX = 0
-    self.camY = 0
-	self.width = 25
-    self.level = LevelMaker.generate(self.width, 10)
-    self.tileMap = self.level.tileMap
-    self.background = math.random(3)
-    self.backgroundX = 0
-
-    self.gravityOn = true
-    self.gravityAmount = 6
-
-    self.player = Player({
+	self.player = Player({
         x = 0, y = 0,
         width = 16, height = 20,
         texture = 'green-alien',
@@ -40,11 +29,19 @@ function PlayState:init()
         map = self.tileMap,
         level = self.level
     })
+	self:spawnEnemies()
+	self.player.score = def.score
+	self.player:changeState('falling')
+end
 
-    self:spawnEnemies()
+function PlayState:init()
+    self.camX = 0
+    self.camY = 0
+    self.background = math.random(3)
+    self.backgroundX = 0
 
-    self.player:changeState('falling')
-
+    self.gravityOn = true
+    self.gravityAmount = 6
 end
 
 function PlayState:spawnFlag()
@@ -61,7 +58,7 @@ function PlayState:spawnFlag()
 		onConsume = function()
 			gStateMachine:change('play', {
 				score = self.player.score + 500,
-				width = self.width * 2,
+				width = math.floor(self.width * 1.25),
 				levelNumber = self.levelNumber + 1
 			})
 
