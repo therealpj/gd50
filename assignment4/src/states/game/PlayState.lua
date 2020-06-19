@@ -7,10 +7,19 @@
 
 PlayState = Class{__includes = BaseState}
 
+
+function PlayState:enter(def)
+	self.width  = def.width
+	self.player.score = def.score
+	self.levelNumber = def.levelNumber
+	self.startTimer = 2
+end
+
 function PlayState:init()
     self.camX = 0
     self.camY = 0
-    self.level = LevelMaker.generate(100, 10)
+	self.width = 25
+    self.level = LevelMaker.generate(self.width, 10)
     self.tileMap = self.level.tileMap
     self.background = math.random(3)
     self.backgroundX = 0
@@ -35,10 +44,47 @@ function PlayState:init()
     self:spawnEnemies()
 
     self.player:changeState('falling')
+
+end
+
+function PlayState:spawnFlag()
+	local pole = GameObject {
+		texture = 'poles',
+		x = (self.width - 2) * TILE_SIZE,
+		y = (4 - 1) * TILE_SIZE ,
+		width = 16,
+		height = 48,
+		frame = math.random(6),
+		collidable = true,
+		consumable = true,
+		solid = false,
+		onConsume = function()
+			gStateMachine:change('play', {
+				score = self.player.score + 500,
+				width = self.width * 2,
+				levelNumber = self.levelNumber + 1
+			})
+
+		end
+	}
+
+	local flag = GameObject {
+		texture = 'flags',
+		x = (self.width - 2) * TILE_SIZE + 8,
+		y = 3 * TILE_SIZE,
+		width = 16,
+		height = 16,
+		frame = 1,
+	}
+
+	table.insert(self.level.objects, flag)
+	table.insert(self.level.objects, pole)
 end
 
 function PlayState:update(dt)
     Timer.update(dt)
+	self.startTimer = self.startTimer - dt
+
 
     -- remove any nils from pickups, etc.
     self.level:clear()
@@ -54,32 +100,51 @@ function PlayState:update(dt)
         self.player.x = TILE_SIZE * self.tileMap.width - self.player.width
     end
 
+	if unlocked then
+		self:spawnFlag()
+		unlocked = false
+	end
+
     self:updateCamera()
 end
 
 function PlayState:render()
     love.graphics.push()
+
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX), 0)
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX),
         gTextures['backgrounds']:getHeight() / 3 * 2, 0, 1, -1)
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256), 0)
     love.graphics.draw(gTextures['backgrounds'], gFrames['backgrounds'][self.background], math.floor(-self.backgroundX + 256),
         gTextures['backgrounds']:getHeight() / 3 * 2, 0, 1, -1)
-    
+
     -- translate the entire view of the scene to emulate a camera
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
-    
+
     self.level:render()
 
     self.player:render()
+
     love.graphics.pop()
-    
+
+
+
+	love.graphics.setFont(gFonts['large'])
+    love.graphics.setColor(255, 255, 255, 255)
+
+	if self.startTimer > 0 then
+		love.graphics.print('Level ' .. tostring(self.levelNumber),
+		VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 2 - 30)
+	end
     -- render score
     love.graphics.setFont(gFonts['medium'])
     love.graphics.setColor(0, 0, 0, 255)
     love.graphics.print(tostring(self.player.score), 5, 5)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.print(tostring(self.player.score), 4, 4)
+
+
+
 end
 
 function PlayState:updateCamera()
@@ -110,7 +175,7 @@ function PlayState:spawnEnemies()
 
                     -- random chance, 1 in 20
                     if math.random(20) == 1 then
-                        
+
                         -- instantiate snail, declaring in advance so we can pass it into state machine
                         local snail
                         snail = Snail {

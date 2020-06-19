@@ -23,6 +23,7 @@ function LevelMaker.generate(width, height)
     local topperset = math.random(20)
 
 	local keySpawned = false
+	local keyTaken = false
 	local lockSpawned = false
 	unlocked = false
 
@@ -98,7 +99,7 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to spawn a block
-            if math.random(9) == 1 then
+            if math.random(4) == 1 then
 				if lockSpawned == false and math.random(3) == 1 then
 					lockSpawned = true
 					local lockPosition = #objects + 1
@@ -153,7 +154,7 @@ function LevelMaker.generate(width, height)
                                 -- chance to spawn gem or key, not guaranteed
                                 if math.random(1) == 1 then
 
-									if math.random(3) == 1 or keySpawned == true then
+									if math.random(10) == 1 or keySpawned == true then
 										-- maintain reference so we can set it to nil
 										local gem = GameObject {
 											texture = 'gems',
@@ -228,6 +229,12 @@ function LevelMaker.generate(width, height)
 		for y = 7, height do
 			tiles[y][1] = Tile(1, y, tileID, y == 7 and topper or nil, tileset, topperset)
 		end
+	end
+
+	-- making sure the tile in which flag spawns has ground beneath
+	for y = 1, height do
+		tiles[y][width - 1] = y >= 7 and Tile(width - 1, y, tileID, y == 7 and topper or nil, tileset, topperset) or
+		Tile(width - 1, y, TILE_ID_EMPTY, nil, tileset, topperset)
 	end
 
     local map = TileMap(width, height)
