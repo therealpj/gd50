@@ -24,6 +24,7 @@ function LevelMaker.generate(width, height)
 
 	local keySpawned = false
 	local lockSpawned = false
+	unlocked = false
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -120,6 +121,7 @@ function LevelMaker.generate(width, height)
                         -- collision function takes itself
                         onCollide = function(obj)
 							if keyTaken then
+								unlocked = true
 								table.remove(objects, lockPosition)
 							end
                             gSounds['empty-block']:play()
