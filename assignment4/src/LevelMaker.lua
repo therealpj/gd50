@@ -23,6 +23,7 @@ function LevelMaker.generate(width, height)
     local topperset = math.random(20)
 
 	local keySpawned = false
+	local lockSpawned = false
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -96,9 +97,37 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to spawn a block
-            if math.random(10) == 1 then
-                table.insert(objects,
+            if math.random(9) == 1 then
+				if lockSpawned == false and math.random(3) == 1 then
+					lockSpawned = true
+					local lockPosition = #objects + 1
+					table.insert(objects,
 
+                    -- lock
+                    GameObject {
+                        texture = 'keys_and_locks',
+                        x = (x - 1) * TILE_SIZE,
+                        y = (blockHeight - 1) * TILE_SIZE,
+                        width = 16,
+                        height = 16,
+
+                        -- make it a random variant
+                        frame = math.random(5, 8),
+                        collidable = true,
+                        hit = false,
+                        solid = true,
+
+                        -- collision function takes itself
+                        onCollide = function(obj)
+							if keyTaken then
+								table.remove(objects, lockPosition)
+							end
+                            gSounds['empty-block']:play()
+                        end
+                    }
+				    )
+				else
+					table.insert(objects,
                     -- jump block
                     GameObject {
                         texture = 'jump-blocks',
@@ -119,10 +148,10 @@ function LevelMaker.generate(width, height)
                             -- spawn a gem if we haven't already hit the block
                             if not obj.hit then
 
-                                -- chance to spawn gem, not guaranteed
-                                if math.random(3) == 1 then
+                                -- chance to spawn gem or key, not guaranteed
+                                if math.random(1) == 1 then
 
-									if math.random(2) == 1 or keySpawned == true then
+									if math.random(3) == 1 or keySpawned == true then
 										-- maintain reference so we can set it to nil
 										local gem = GameObject {
 											texture = 'gems',
@@ -164,6 +193,7 @@ function LevelMaker.generate(width, height)
 
 											-- gem has its own function to add to the player's score
 											onConsume = function(player, object)
+												keyTaken = true
 												gSounds['pickup']:play()
 											end
 										}
@@ -185,7 +215,8 @@ function LevelMaker.generate(width, height)
                             gSounds['empty-block']:play()
                         end
                     }
-                )
+				    )
+				end
             end
         end
     end
