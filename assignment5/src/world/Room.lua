@@ -104,6 +104,18 @@ function Room:generateObjects()
             gSounds['door']:play()
         end
     end
+
+	-- generate pots
+	numberOfPots = math.random(1, 5)
+	for pots = 1, numberOfPots do
+		table.insert(self.objects, GameObject(
+		GAME_OBJECT_DEFS['pot'],
+		math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
+                    VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+        math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
+                    VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+        ))
+	end
 end
 
 --[[
@@ -192,7 +204,10 @@ function Room:update(dt)
 				object:onConsume({room = self})
 				table.remove(self.objects, k)
 			end
-			object:onCollide()
+
+			if self.player:collides(object) then
+				object:onCollide({room = self})
+			end
         end
     end
 end

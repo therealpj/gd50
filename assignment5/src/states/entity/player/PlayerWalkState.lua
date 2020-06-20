@@ -36,7 +36,9 @@ function PlayerWalkState:update(dt)
 
     if love.keyboard.wasPressed('space') then
         self.entity:changeState('swing-sword')
-    end
+    elseif love.keyboard.wasPressed('enter') then
+		self.entity:changeState('pickup')
+	end
 
     -- perform base collision detection against walls
     EntityWalkState.update(self, dt)
@@ -44,10 +46,10 @@ function PlayerWalkState:update(dt)
     -- if we bumped something when checking collision, check any object collisions
     if self.bumped then
         if self.entity.direction == 'left' then
-            
+
             -- temporarily adjust position
             self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
-            
+
             for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
@@ -60,10 +62,10 @@ function PlayerWalkState:update(dt)
             -- readjust
             self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
         elseif self.entity.direction == 'right' then
-            
+
             -- temporarily adjust position
             self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
-            
+
             for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
@@ -76,10 +78,10 @@ function PlayerWalkState:update(dt)
             -- readjust
             self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
         elseif self.entity.direction == 'up' then
-            
+
             -- temporarily adjust position
             self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
-            
+
             for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
@@ -92,10 +94,10 @@ function PlayerWalkState:update(dt)
             -- readjust
             self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
         else
-            
+
             -- temporarily adjust position
             self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
-            
+
             for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 

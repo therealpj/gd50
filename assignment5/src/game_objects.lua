@@ -25,9 +25,36 @@ GAME_OBJECT_DEFS = {
             }
         }
     },
+
     ['pot'] = {
-        -- TODO
+		type = 'pot',
+		texture = 'tiles',
+		frame = 14,
+		width = 16,
+		height = 16,
+		solid = true,
+		defaultState = 'unpicked',
+		consumable = false,
+		states = {
+			['unpicked'] = {
+				frame = 14
+			}
+		},
+		onConsume = function()
+		end,
+		onCollide = function(pot, def)
+			if def.room.player.direction == 'left' then
+				def.room.player.x = pot.x + 17
+			elseif def.room.player.direction == 'right' then
+				def.room.player.x = pot.x  - 17
+			elseif def.room.player.direction == 'up' then
+				def.room.player.y = pot.y + 6
+			else
+				def.room.player.y = pot.y - 24
+			end
+		end
     },
+
 	['heart'] = {
 		type = 'heart',
 		texture = 'hearts',
@@ -35,16 +62,15 @@ GAME_OBJECT_DEFS = {
 		width = 16,
 		height = 16,
 		solid = false,
-		defaultState  = 'unpicked',
+		defaultState  = 'fallen',
 		consumable = true,
 		states = {
-			['unpicked'] = {
+			['fallen'] = {
 				frame = 5
 			}
 		},
 		onConsume = function(heart, def)
 			def.room.player.health = def.room.player.health >= 5 and 6 or def.room.player.health + 2
-
 		end
 	}
 }
