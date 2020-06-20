@@ -15,6 +15,7 @@ GAME_OBJECT_DEFS = {
         height = 16,
         solid = false,
         defaultState = 'unpressed',
+		consumable = false,
         states = {
             ['unpressed'] = {
                 frame = 2
@@ -26,5 +27,24 @@ GAME_OBJECT_DEFS = {
     },
     ['pot'] = {
         -- TODO
-    }
+    },
+	['heart'] = {
+		type = 'heart',
+		texture = 'hearts',
+		frame = 5,
+		width = 16,
+		height = 16,
+		solid = false,
+		defaultState  = 'unpicked',
+		consumable = true,
+		states = {
+			['unpicked'] = {
+				frame = 5
+			}
+		},
+		onConsume = function(heart, def)
+			def.room.player.health = def.room.player.health >= 5 and 6 or def.room.player.health + 2
+
+		end
+	}
 }

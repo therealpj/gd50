@@ -60,7 +60,7 @@ function Room:generateEntities()
                 VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
             y = math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
                 VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16),
-            
+
             width = 16,
             height = 16,
 
@@ -95,7 +95,7 @@ function Room:generateObjects()
     switch.onCollide = function()
         if switch.state == 'unpressed' then
             switch.state = 'pressed'
-            
+
             -- open every door in the room if we press the switch
             for k, doorway in pairs(self.doorways) do
                 doorway.open = true
@@ -125,7 +125,7 @@ function Room:generateWallsAndFloors()
                 id = TILE_TOP_RIGHT_CORNER
             elseif x == self.width and y == self.height then
                 id = TILE_BOTTOM_RIGHT_CORNER
-            
+
             -- random left-hand walls, right walls, top, bottom, and floors
             elseif x == 1 then
                 id = TILE_LEFT_WALLS[math.random(#TILE_LEFT_WALLS)]
@@ -138,7 +138,7 @@ function Room:generateWallsAndFloors()
             else
                 id = TILE_FLOORS[math.random(#TILE_FLOORS)]
             end
-            
+
             table.insert(self.tiles[y], {
                 id = id
             })
@@ -157,11 +157,19 @@ function Room:update(dt)
 
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 then
+			if entity.dead == false then
+				-- chance for enemy to drop a heart
+				if math.random(9) == 1 then
+					table.insert(self.objects, GameObject(
+					GAME_OBJECT_DEFS['heart'], entity.x, entity.y
+				))
+				end
+			end
             entity.dead = true
         elseif not entity.dead then
-            entity:processAI({room = self}, dt)
-            entity:update(dt)
-        end
+			entity:processAI({room = self}, dt)
+			entity:update(dt)
+		end
 
         -- collision between the player and entities in the room
         if not entity.dead and self.player:collides(entity) and not self.player.invulnerable then
@@ -180,7 +188,11 @@ function Room:update(dt)
 
         -- trigger collision callback on object
         if self.player:collides(object) then
-            object:onCollide()
+			if object.consumable then
+				object:onConsume({room = self})
+				table.remove(self.objects, k)
+			end
+			object:onCollide()
         end
     end
 end
@@ -190,7 +202,7 @@ function Room:render()
         for x = 1, self.width do
             local tile = self.tiles[y][x]
             love.graphics.draw(gTextures['tiles'], gFrames['tiles'][tile.id],
-                (x - 1) * TILE_SIZE + self.renderOffsetX + self.adjacentOffsetX, 
+                (x - 1) * TILE_SIZE + self.renderOffsetX + self.adjacentOffsetX,
                 (y - 1) * TILE_SIZE + self.renderOffsetY + self.adjacentOffsetY)
         end
     end
@@ -206,7 +218,7 @@ function Room:render()
     end
 
     for k, entity in pairs(self.entities) do
-        if not entity.dead then entity:render(self.adjacentOffsetX, self.adjacentOffsetY) end
+        if not entity.dead  then entity:render(self.adjacentOffsetX, self.adjacentOffsetY) end
     end
 
     -- stencil out the door arches so it looks like the player is going through
@@ -214,22 +226,22 @@ function Room:render()
         -- left
         love.graphics.rectangle('fill', -TILE_SIZE - 6, MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2) * TILE_SIZE - TILE_SIZE,
             TILE_SIZE * 2 + 6, TILE_SIZE * 2)
-        
+
         -- right
         love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH * TILE_SIZE) - 6,
             MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2) * TILE_SIZE - TILE_SIZE, TILE_SIZE * 2 + 6, TILE_SIZE * 2)
-        
+
         -- top
         love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2) * TILE_SIZE - TILE_SIZE,
             -TILE_SIZE - 6, TILE_SIZE * 2, TILE_SIZE * 2 + 12)
-        
+
         --bottom
         love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2) * TILE_SIZE - TILE_SIZE,
             VIRTUAL_HEIGHT - TILE_SIZE - 6, TILE_SIZE * 2, TILE_SIZE * 2 + 12)
     end, 'replace', 1)
 
     love.graphics.setStencilTest('less', 1)
-    
+
     if self.player then
         self.player:render()
     end
