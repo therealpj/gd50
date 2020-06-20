@@ -84,7 +84,7 @@ function LevelMaker.generate(width, height)
                 tiles[7][x].topper = nil
 
             -- chance to generate bushes
-            elseif math.random(8) == 1 then
+		elseif math.random(8) == 1 and x ~= width - 2 then
                 table.insert(objects,
                     GameObject {
                         texture = 'bushes',
@@ -99,7 +99,7 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to spawn a block
-            if math.random(4) == 1 then
+			if math.random(5) == 1 and x ~= width - 1 then
 				if lockSpawned == false and math.random(3) == 1 then
 					lockSpawned = true
 					local lockPosition = #objects + 1
@@ -152,9 +152,9 @@ function LevelMaker.generate(width, height)
                             if not obj.hit then
 
                                 -- chance to spawn gem or key, not guaranteed
-                                if math.random(1) == 1 then
+                                if math.random(2) == 1 then
 
-									if math.random(10) == 1 or keySpawned == true then
+									if math.random(4) == 1 or keySpawned == true then
 										-- maintain reference so we can set it to nil
 										local gem = GameObject {
 											texture = 'gems',
@@ -235,6 +235,39 @@ function LevelMaker.generate(width, height)
 	for y = 1, height do
 		tiles[y][width - 1] = y >= 7 and Tile(width - 1, y, tileID, y == 7 and topper or nil, tileset, topperset) or
 		Tile(width - 1, y, TILE_ID_EMPTY, nil, tileset, topperset)
+	end
+
+	-- making sure there's atleast one lock in the level
+	if lockSpawned == false then
+		for y = 1, height do
+			tiles[y][width - 2] = y >= 7 and Tile(width - 1, y, tileID, y == 7 and topper or nil, tileset, topperset) or
+			Tile(width - 1, y, TILE_ID_EMPTY, nil, tileset, topperset)
+		end
+		local lockPosition = #objects + 1
+		table.insert(objects,
+		-- lock
+		GameObject {
+			texture = 'keys_and_locks',
+			x = (width - 2) * TILE_SIZE,
+			y = 3 *  TILE_SIZE,
+			width = 16,
+			height = 16,
+
+			-- make it a random variant
+			frame = math.random(5, 8),
+			collidable = true,
+			hit = false,
+			solid = true,
+
+			-- collision function takes itself
+			onCollide = function(obj)
+				if keyTaken then
+					unlocked = true
+					table.remove(objects, lockPosition)
+				end
+				gSounds['empty-block']:play()
+			end
+		})
 	end
 
     local map = TileMap(width, height)
