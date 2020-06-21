@@ -59,7 +59,7 @@ function PlayerIdleState:update(dt)
 			end
 		elseif self.entity.direction == 'right' then
 			for k, object in pairs(self.objects) do
-				if object.type == 'pot' then
+				if object.type == 'pot' and object.state ~= 'broken' then
 					if object.x - self.entity.x < 20 and
 					   object.x - self.entity.x > 0 then
 						   self.entity.pickedUpObject = object
@@ -79,7 +79,7 @@ function PlayerIdleState:update(dt)
 			end
 		elseif self.entity.direction == 'up' then
 			for k, object in pairs(self.objects) do
-				if object.type == 'pot' then
+				if object.type == 'pot' and object.state ~= 'broken' then
 					if self.entity.y - object.y < 20 and
 					   self.entity.y - object.y > 0 then
 						   self.entity.pickedUpObject = object
@@ -99,7 +99,7 @@ function PlayerIdleState:update(dt)
 			end
 		elseif self.entity.direction == 'down'then
 			for k, object in pairs(self.objects) do
-				if object.type == 'pot' then
+				if object.type == 'pot' and object.state ~= 'broken' then
 					if (object.y - self.entity.y < 25 and
 					   object.y - self.entity.y > 0)
 					   and (math.abs(object.x - self.entity.x) < 5 ) then

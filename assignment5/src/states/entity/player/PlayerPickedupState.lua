@@ -59,7 +59,6 @@ function PlayerPickedupState:update(dt)
 			end
 		end
 
-		print(pot.x, pot.y, self.room.width, self.room.height)
 		if pot.x > (self.room.width - 1) * 16 or
 		 pot.y > (self.room.height - 1) * 16 or
 		 pot.x < 32 or
