@@ -39,6 +39,7 @@ function GameObject:update(dt)
 
 end
 
+
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)
     love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
         self.x + adjacentOffsetX, self.y + adjacentOffsetY)

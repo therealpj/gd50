@@ -5,7 +5,7 @@ function PickedupWalkState:init(player, dungeon)
 	self.dungeon = dungeon
 
 	self.entity.offsetX = 0
-	self.entity.offsetY = 5
+	self.entity.offsetY = 8
 
 end
 
@@ -25,7 +25,7 @@ function PickedupWalkState:update(dt)
     else
         self.entity:changeState('pickedup')
 	end
-	
+
 	self.bumped = false
 
     if self.entity.direction == 'left' then

@@ -38,11 +38,14 @@ GAME_OBJECT_DEFS = {
 		consumable = false,
 		states = {
 			['unpicked'] = {
-				frame = 14,
+				frame = 15,
 			},
+			['broken'] = {
+				frame = 53,
+			}
 		},
 		onCollide = function(pot, def)
-			if pot.pickedUp == false then
+			if pot.pickedUp == false and pot.state ~= 'broken' then
 				if def.room.player.direction == 'left' then
 					def.room.player.x = pot.x + 17
 				elseif def.room.player.direction == 'right' then

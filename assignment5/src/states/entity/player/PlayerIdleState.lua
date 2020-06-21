@@ -39,7 +39,7 @@ function PlayerIdleState:update(dt)
     elseif love.keyboard.wasPressed('return') then
 		if self.entity.direction == 'left' then
 			for k, object in pairs(self.objects) do
-				if object.type == 'pot' then
+				if object.type == 'pot' and object.state ~= 'broken' then
 					if self.entity.x - object.x < 20 and
 					   self.entity.x - object.x > 0 then
 						   self.entity.pickedUpObject = object

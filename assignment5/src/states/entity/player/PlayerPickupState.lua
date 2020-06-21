@@ -1,7 +1,7 @@
 PlayerPickupState = Class{__includes = BaseState}
 
 function PlayerPickupState:enter(params)
-	self.player.offsetY = 5
+	self.player.offsetY = 8
 	self.player.offsetX = 0
 end
 
