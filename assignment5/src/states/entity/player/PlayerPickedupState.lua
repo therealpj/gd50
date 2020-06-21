@@ -8,6 +8,9 @@ function PlayerPickedupState:init(player, dungeon)
 	self.player.offsetX = 0
 
 	self.player:changeAnimation('pickedup-' .. self.player.direction)
+	throwSpeed = 300
+	gravity = 10
+	self.pot = self.player.pickedUpObject
 end
 
 
@@ -16,11 +19,47 @@ function PlayerPickedupState:update(dt)
 		self.player:changeState('pickedup-walk')
 	end
 
+	local pot = self.pot
 	if love.keyboard.wasPressed('return') then
-		-- throw logic here
-		self.player:changeState('idle')
+		if self.player.direction == 'left' then
+			pot.update = function(dt)
+				pot.x = pot.x - (throwSpeed * dt)
+				throwSpeed = throwSpeed - gravity
+				if throwSpeed == 0 then
+					pot.update = function(dt) end
+					pot.pickedUp = false
+				end
+			end
+		elseif self.player.direction == 'right' then
+			pot.update = function(dt)
+				pot.x = pot.x + (throwSpeed * dt)
+				throwSpeed = throwSpeed - gravity
+				if throwSpeed == 0 then
+					pot.update = function(dt) end
+					pot.pickedUp = false
+				end
+			end
+		elseif self.player.direction == 'up' then
+			pot.update = function(dt)
+				pot.y = pot.y - (throwSpeed * dt)
+				throwSpeed = throwSpeed - gravity
+				if throwSpeed == 0 then
+					pot.update = function(dt) end
+					pot.pickedUp = false
+				end
+			end
+		elseif self.player.direction == 'down' then
+			pot.update = function(dt)
+				pot.y = pot.y + (throwSpeed * dt)
+				throwSpeed = throwSpeed - gravity
+				if throwSpeed == 0 then
+					pot.update = function(dt) end
+					pot.pickedUp = false
+				end
+			end
+		end
+			self.player:changeState('idle')
 	end
-
 end
 
 function PlayerPickedupState:render()

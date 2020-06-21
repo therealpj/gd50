@@ -16,6 +16,7 @@ function PlayerIdleState:init(player, dungeon)
     self.entity.offsetX = 0
 
 	self.entity:changeAnimation('idle-' .. self.entity.direction)
+	self.entity.pickedUpObject = nil
 end
 function PlayerIdleState:enter(params)
     -- render offset for spaced character sprite
@@ -41,6 +42,7 @@ function PlayerIdleState:update(dt)
 				if object.type == 'pot' then
 					if self.entity.x - object.x < 20 and
 					   self.entity.x - object.x > 0 then
+						   self.entity.pickedUpObject = object
 						self.entity:changeState('pickup')
 						object.pickedUp = true
 						Timer.tween(.1, {
@@ -60,6 +62,7 @@ function PlayerIdleState:update(dt)
 				if object.type == 'pot' then
 					if object.x - self.entity.x < 20 and
 					   object.x - self.entity.x > 0 then
+						   self.entity.pickedUpObject = object
 						self.entity:changeState('pickup')
 						object.pickedUp = true
 						Timer.tween(.1, {
@@ -79,6 +82,7 @@ function PlayerIdleState:update(dt)
 				if object.type == 'pot' then
 					if self.entity.y - object.y < 20 and
 					   self.entity.y - object.y > 0 then
+						   self.entity.pickedUpObject = object
 						self.entity:changeState('pickup')
 						object.pickedUp = true
 						Timer.tween(.1, {
@@ -99,6 +103,7 @@ function PlayerIdleState:update(dt)
 					if (object.y - self.entity.y < 25 and
 					   object.y - self.entity.y > 0)
 					   and (math.abs(object.x - self.entity.x) < 5 ) then
+						   self.entity.pickedUpObject = object
 						self.entity:changeState('pickup')
 						object.pickedUp = true
 						Timer.tween(.1, {

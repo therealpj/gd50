@@ -24,12 +24,8 @@ function PickedupWalkState:update(dt)
         self.entity:changeAnimation('pickedup-walk-down')
     else
         self.entity:changeState('pickedup')
-    end
-
-	for k, pair in pairs(self) do
-		print(k, pair)
 	end
-
+	
 	self.bumped = false
 
     if self.entity.direction == 'left' then
@@ -64,7 +60,7 @@ function PickedupWalkState:update(dt)
             self.bumped = true
         end
     end
-    
+
 end
 
 
