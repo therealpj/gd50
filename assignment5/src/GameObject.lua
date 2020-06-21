@@ -34,6 +34,7 @@ function GameObject:init(def, x, y)
     self.onCollide = def.onCollide or function(def) end
 end
 
+
 function GameObject:update(dt)
 
 end

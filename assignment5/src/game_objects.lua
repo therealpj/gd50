@@ -34,23 +34,24 @@ GAME_OBJECT_DEFS = {
 		height = 16,
 		solid = true,
 		defaultState = 'unpicked',
+		pickedUp = false,
 		consumable = false,
 		states = {
 			['unpicked'] = {
-				frame = 14
-			}
+				frame = 14,
+			},
 		},
-		onConsume = function()
-		end,
 		onCollide = function(pot, def)
-			if def.room.player.direction == 'left' then
-				def.room.player.x = pot.x + 17
-			elseif def.room.player.direction == 'right' then
-				def.room.player.x = pot.x  - 17
-			elseif def.room.player.direction == 'up' then
-				def.room.player.y = pot.y + 6
-			else
-				def.room.player.y = pot.y - 24
+			if pot.pickedUp == false then
+				if def.room.player.direction == 'left' then
+					def.room.player.x = pot.x + 17
+				elseif def.room.player.direction == 'right' then
+					def.room.player.x = pot.x  - 17
+				elseif def.room.player.direction == 'up' then
+					def.room.player.y = pot.y + 6
+				else
+					def.room.player.y = pot.y - 24
+				end
 			end
 		end
     },

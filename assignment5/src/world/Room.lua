@@ -107,6 +107,7 @@ function Room:generateObjects()
 
 	-- generate pots
 	numberOfPots = math.random(1, 5)
+
 	for pots = 1, numberOfPots do
 		table.insert(self.objects, GameObject(
 		GAME_OBJECT_DEFS['pot'],
@@ -115,6 +116,8 @@ function Room:generateObjects()
         math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
                     VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
         ))
+		
+		self.objects[#self.objects].pickedUp = false
 	end
 end
 
@@ -171,7 +174,7 @@ function Room:update(dt)
         if entity.health <= 0 then
 			if entity.dead == false then
 				-- chance for enemy to drop a heart
-				if math.random(9) == 1 then
+				if math.random(1) == 1 then
 					table.insert(self.objects, GameObject(
 					GAME_OBJECT_DEFS['heart'], entity.x, entity.y
 				))
@@ -196,14 +199,18 @@ function Room:update(dt)
     end
 
     for k, object in pairs(self.objects) do
-        object:update(dt)
-
+		if object.pickedUp == true and object.type == 'pot' then
+			object.update(dt)
+		elseif object.type ~= 'pot' then
+			object.update(dt)
+		end
         -- trigger collision callback on object
         if self.player:collides(object) then
 			if object.consumable then
 				object:onConsume({room = self})
 				table.remove(self.objects, k)
 			end
+
 
 			if self.player:collides(object) then
 				object:onCollide({room = self})
