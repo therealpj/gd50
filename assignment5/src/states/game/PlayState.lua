@@ -34,7 +34,8 @@ function PlayState:init()
         ['idle'] = function() return PlayerIdleState(self.player, self.dungeon) end,
         ['swing-sword'] = function() return PlayerSwingSwordState(self.player, self.dungeon) end,
 		['pickup'] = function() return PlayerPickupState(self.player, self.dungeon) end,
-
+		['pickedup'] = function() return PlayerPickedupState(self.player, self.dungeon) end,
+		['pickedup-walk'] = function() return PickedupWalkState(self.player, self.dungeon) end
     }
     self.player:changeState('idle')
 end

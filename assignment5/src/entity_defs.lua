@@ -94,6 +94,22 @@ ENTITY_DEFS = {
 				looping = false,
 				texture = 'character-pot-lift'
 			},
+			['pickedup-left'] = {
+				frames = {12},
+				texture = 'character-pot-lift'
+			},
+			['pickedup-right'] = {
+				frames = {6},
+				texture = 'character-pot-lift'
+			},
+			['pickedup-up'] = {
+				frames = {9},
+				texture = 'character-pot-lift'
+			},
+			['pickedup-down'] = {
+				frames = {3},
+				texture = 'character-pot-lift'
+			},
 			['pickedup-walk-left'] = {
 				frames = {13, 14, 15, 16},
 				interval = 0.155,

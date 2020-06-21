@@ -3,8 +3,6 @@ PlayerPickupState = Class{__includes = BaseState}
 function PlayerPickupState:enter(params)
 	self.player.offsetY = 5
 	self.player.offsetX = 0
-
-	self.player.currentAnimation:refresh()
 end
 
 function PlayerPickupState:init(player, dungeon)
@@ -21,11 +19,11 @@ function PlayerPickupState:update(dt)
 
 	if self.player.currentAnimation.timesPlayed > 0 then
 		self.player.currentAnimation.timesPlayed = 0
-		-- Change state to PlayerPickedUpState
-		self.player:changeState('idle')
+		-- Change state to PlayerPickedupState
+		self.player:changeState('pickedup')
 	end
 
-	if love.keyboard.wasPressed('enter') then
+	if love.keyboard.wasPressed('return') then
 		-- change state to PlayerThrowState
 		self.player:changeState('idle')
 	end
