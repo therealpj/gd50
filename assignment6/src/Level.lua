@@ -201,23 +201,44 @@ function Level:update(dt)
 
     -- replace launch marker if original alien stopped moving
     if self.launchMarker.launched then
-		local positions = {}
-		local velocities = {}
-        local xPos, yPos = self.launchMarker.alien.body:getPosition()
-        local xVel, yVel = self.launchMarker.alien.body:getLinearVelocity()
 		self.inFlight = true
+		 positions = {}
 
-        -- if we fired our alien to the left or it's almost done rolling, respawn
-        if xPos < 0 or (math.abs(xVel) + math.abs(yVel) < 1.5) then
+		table.insert(positions, self.launchMarker.alien.body)
+
+		if self.reinforcements then
+			table.insert(positions, self.alienUp.body)
+			table.insert(positions, self.alienDown.body)
+		end
+
+		local count = 0
+		for i = 1, #positions do
+			local xPos, yPos = positions[i]:getPosition()
+			local xVel, yVel = positions[i]:getLinearVelocity()
+
+			-- if we fired our alien to the left or it's almost done rolling, respawn
+			if xPos < 0 or (math.abs(xVel) + math.abs(yVel) < 1.5) or xPos > VIRTUAL_WIDTH + 20 then
+				count = count + 1
+			end
+		end
+		print(count)
+
+		if count == 3 and self.reinforcements then
+			self.reinforcements = false
+			self.launchMarker.alien.body:destroy()
+			self.alienUp.body:destroy()
+			self.alienDown.body:destroy()
 			self.inFlight = false
-            self.launchMarker.alien.body:destroy()
-            self.launchMarker = AlienLaunchMarker(self.world)
+			self.launchMarker = AlienLaunchMarker(self.world)
+		elseif count == 1 and self.reinforcements == false then
+			self.launchMarker.alien.body:destroy()
+			self.launchMarker = AlienLaunchMarker(self.world)
+		end
 
-            -- re-initialize level if we have no more aliens
-            if #self.aliens == 0 then
-                gStateMachine:change('start')
-            end
-        end
+		-- re-initialize level if we have no more aliens
+		if #self.aliens == 0 then
+			gStateMachine:change('start')
+		end
     end
 end
 
