@@ -73,7 +73,7 @@ function Level:init()
             if a:getUserData() == 'Player' then
                 local velX, velY = a:getBody():getLinearVelocity()
                 local sumVel = math.abs(velX) + math.abs(velY)
-                
+
                 if sumVel > 20 then
                     table.insert(self.destroyedBodies, b:getBody())
                 end
@@ -97,7 +97,6 @@ function Level:init()
     -- the remaining three functions here are sample definitions, but we are not
     -- implementing any functionality with them in this demo; use-case specific
     function endContact(a, b, coll)
-        
     end
 
     function preSolve(a, b, coll)
@@ -142,6 +141,9 @@ function Level:init()
 
     -- background graphics
     self.background = Background()
+
+	self.inFlight = false
+	self.reinforcements = false
 end
 
 function Level:update(dt)
@@ -153,7 +155,7 @@ function Level:update(dt)
 
     -- destroy all bodies we calculated to destroy during the update call
     for k, body in pairs(self.destroyedBodies) do
-        if not body:isDestroyed() then 
+        if not body:isDestroyed() then
             body:destroy()
         end
     end
@@ -182,13 +184,32 @@ function Level:update(dt)
         end
     end
 
+	-- powering up
+	if self.inFlight and love.keyboard.wasPressed('space') and self.reinforcements == false then
+		self.reinforcements = true
+		self.alienUp = Alien(self.world, 'round', self.launchMarker.alien.body:getX() + 20, self.launchMarker.alien.body:getY() - 20, 'Player')
+		self.alienDown = Alien(self.world, 'round', self.launchMarker.alien.body:getX() + 20, self.launchMarker.alien.body:getY() + 20, 'Player')
+		local xVel, yVel = self.launchMarker.alien.body:getLinearVelocity()
+		self.alienUp.body:setLinearVelocity(xVel, yVel - 50)
+		self.alienDown.body:setLinearVelocity(xVel, yVel + 50)
+		self.alienUp.fixture:setRestitution(0.4)
+		self.alienDown.fixture:setRestitution(0.4)
+		self.alienUp.body:setAngularDamping(1)
+		self.alienDown.body:setAngularDamping(1)
+	end
+
+
     -- replace launch marker if original alien stopped moving
     if self.launchMarker.launched then
+		local positions = {}
+		local velocities = {}
         local xPos, yPos = self.launchMarker.alien.body:getPosition()
         local xVel, yVel = self.launchMarker.alien.body:getLinearVelocity()
-        
+		self.inFlight = true
+
         -- if we fired our alien to the left or it's almost done rolling, respawn
         if xPos < 0 or (math.abs(xVel) + math.abs(yVel) < 1.5) then
+			self.inFlight = false
             self.launchMarker.alien.body:destroy()
             self.launchMarker = AlienLaunchMarker(self.world)
 
@@ -232,4 +253,11 @@ function Level:render()
         love.graphics.printf('VICTORY', 0, VIRTUAL_HEIGHT / 2 - 32, VIRTUAL_WIDTH, 'center')
         love.graphics.setColor(255, 255, 255, 255)
     end
+
+	-- rendering our reinforcements
+	if self.reinforcements then
+		self.alienUp:render()
+		self.alienDown:render()
+	end
+
 end
