@@ -4,10 +4,10 @@ function StatState:init(pokemon, HPIncrease, attackIncrease, defenseIncrease, sp
 	self.pokemon = pokemon
 	self.onClose = onClose
 	self.statMenu = Menu {
-        x = VIRTUAL_WIDTH - 100,
-        y = VIRTUAL_HEIGHT - 150,
-        width = 100,
-        height = 150,
+        x = VIRTUAL_WIDTH - 140,
+        y = VIRTUAL_HEIGHT - 170,
+        width = 140,
+        height = 170,
 		cursor = false,
         items = {
             {
