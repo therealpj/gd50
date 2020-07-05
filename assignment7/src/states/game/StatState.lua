@@ -4,24 +4,25 @@ function StatState:init(pokemon, HPIncrease, attackIncrease, defenseIncrease, sp
 	self.pokemon = pokemon
 	self.onClose = onClose
 	self.statMenu = Menu {
-        x = VIRTUAL_WIDTH - 140,
-        y = VIRTUAL_HEIGHT - 170,
-        width = 140,
-        height = 170,
+        x = VIRTUAL_WIDTH - 160,
+        y = VIRTUAL_HEIGHT - 180,
+        width = 160,
+        height = 180,
 		cursor = false,
         items = {
+			{
+				text = 'HP: ' .. self.pokemon.HP - HPIncrease.. " + " .. HPIncrease .. " = " .. self.pokemon.HP
+			},
+
             {
-                text = 'Attack: ' .. self.pokemon.attack .. " + " .. attackIncrease
+                text = 'Attack: ' .. self.pokemon.attack - attackIncrease .. " + " .. attackIncrease .. " = " .. self.pokemon.attack
 
             },
 			{
-				text = 'Defense: ' .. self.pokemon.defense .. " + " .. defenseIncrease
+				text = 'Defense: ' .. self.pokemon.defense  - defenseIncrease.. " + " .. defenseIncrease .. " = " .. self.pokemon.defense
 			},
 			{
-				text = 'HP: ' .. self.pokemon.HP .. " + " .. HPIncrease
-			},
-			{
-				text = 'Speed: ' .. self.pokemon.speed .. " + " .. speedIncrease
+				text = 'Speed: ' .. self.pokemon.speed - speedIncrease .. " + " .. speedIncrease .. " = " .. self.pokemon.speed
 			},
         }
     }
